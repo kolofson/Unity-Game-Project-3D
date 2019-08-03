@@ -12,24 +12,28 @@ public class PlayerCamera : MonoBehaviour {
     public float maxVer = 45.0f;
 
     GameObject character;
+    GameObject pauseMenu;
 
-    // Start is called before the first frame update
     void Start() {
         character = this.transform.parent.gameObject;
+        pauseMenu = GameObject.Find("PauseMenuMain");
     }
 
-    // Update is called once per frame
     void Update() {
-        var md = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
+        //check if game is paused
+        if (!pauseMenu.activeSelf) {
+            //when player moves camera
+            var md = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
 
-        md = Vector2.Scale(md, new Vector2(sensitivity * smoothing, sensitivity * smoothing));
-        smoothV.x = Mathf.Lerp(smoothV.x, md.x, 1f / smoothing);
-        smoothV.y = Mathf.Lerp(smoothV.y, md.y, 1f / smoothing);
-        mouseLook += smoothV;
-        //prevents flipping of camera 
-        mouseLook.y = Mathf.Clamp(mouseLook.y, minVer, maxVer);
+            md = Vector2.Scale(md, new Vector2(sensitivity * smoothing, sensitivity * smoothing));
+            smoothV.x = Mathf.Lerp(smoothV.x, md.x, 1f / smoothing);
+            smoothV.y = Mathf.Lerp(smoothV.y, md.y, 1f / smoothing);
+            mouseLook += smoothV;
+            //prevents flipping of camera 
+            mouseLook.y = Mathf.Clamp(mouseLook.y, minVer, maxVer);
 
-        transform.localRotation = Quaternion.AngleAxis(-mouseLook.y, Vector3.right);
-        character.transform.localRotation = Quaternion.AngleAxis(mouseLook.x, character.transform.up);
+            transform.localRotation = Quaternion.AngleAxis(-mouseLook.y, Vector3.right);
+            character.transform.localRotation = Quaternion.AngleAxis(mouseLook.x, character.transform.up);
+        }
     }
 }
